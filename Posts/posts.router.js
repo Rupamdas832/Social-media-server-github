@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 
-const { getAllPosts, addPost,updateLike,removeLike,findPostById,addComment,removeComment  } = require("./posts.controller.js")
+const { getAllPosts, addPost,updateLike,removeLike,findPostById,addComment,removeComment, removePost  } = require("./posts.controller.js")
 const {authVerify} = require("../Users/users.controller.js")
 
 router.route("/")
@@ -10,6 +10,7 @@ router.route("/")
 router.route("/")
 .get(getAllPosts)
 .post(authVerify, addPost)
+.delete(authVerify, removePost)
 
 router.route("/:postId/like")
   .post(authVerify,updateLike)

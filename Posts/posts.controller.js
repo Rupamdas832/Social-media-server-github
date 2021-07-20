@@ -36,6 +36,25 @@ const addPost = async (req, res) => {
   }
 }
 
+const removePost = async (req,res) => {
+  const {postId} = req.body;
+  const {userId} = req
+
+  try{
+    const foundPost = await Post.findById(postId)
+    if(!foundPost){
+      return res.status(404).json({ success: false, message: "Post not found. Sorry!" }) 
+    }else{
+      foundPost.remove()
+      res.status(200).json({ success: true, removedPost: foundPost })
+    }
+
+  }catch(error){
+    console.log(error)
+    res.status(500).json({ success: false, message: "Couldn't retrieve data. Sorry!" })
+  }
+}
+
 const findPostById = async (req,res,next,postId) => {
   try{
 const foundPost = await Post.findById(postId)
@@ -113,4 +132,4 @@ const removeComment = async (req,res) => {
   }
 }
 
-module.exports = { getAllPosts, addPost,updateLike,removeLike,findPostById,addComment,removeComment }
+module.exports = { getAllPosts, addPost,updateLike,removeLike,findPostById,addComment,removeComment,removePost }

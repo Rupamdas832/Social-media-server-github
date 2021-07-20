@@ -13,7 +13,7 @@ const loginUserWithCredentials = async (req, res) => {
 
 
     if (!foundUserByEmail && !foundUserByUserName) {
-      return res.status(400).json({ success: false, message: "User  not found" })
+      return res.status(404).json({ success: false, message: "User  not found" })
     } else if (foundUserByEmail || foundUserByUserName) {
       let foundUser
       if (foundUserByEmail) {
