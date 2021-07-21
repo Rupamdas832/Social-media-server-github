@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 
-const { loginUserWithCredentials, signupUserWithEmailAndPassword, userAuthentication, authVerify, userDetailsUpdate, getAllUsers, followUser, getUserByUserName } = require("./users.controller.js")
+const { loginUserWithCredentials, signupUserWithEmailAndPassword, userAuthentication, authVerify, userDetailsUpdate, getAllUsers, followUser, getUserByUserName,unfollowUser } = require("./users.controller.js")
 
 router.route("/users").get(getAllUsers)
 
@@ -15,6 +15,7 @@ router.route("/user")
 
 router.route("/user/follow")
   .post(authVerify, followUser)
+  .delete(authVerify,unfollowUser)
 
 router.route("/user/:userName")
   .get(authVerify, getUserByUserName)

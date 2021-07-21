@@ -93,7 +93,7 @@ const userAuthentication = async (req, res) => {
 
 const authVerify = (req, res, next) => {
   const token = req.headers.authorization;
-
+  
   try {
     const decoded = jwt.verify(token, secretKey)
     req.userId = decoded.userId
@@ -143,7 +143,7 @@ const followUser = async (req, res) => {
   try {
     let userToFollow = await User.findById(userIdToFollow)
     let user = await User.findById(userId)
-    if (!userToFollow && !user) {
+    if (!userToFollow || !user) {
       return res.status(400).json({ success: false, message: "Users not found" })
     }
     const newFollower = {
@@ -172,6 +172,30 @@ const followUser = async (req, res) => {
   }
 }
 
+const unfollowUser = async (req,res) => {
+  const { userIdToUnFollow } = req.body
+  const { userId } = req
+
+  try {
+    let userToUnFollow = await User.findById(userIdToUnFollow)
+    let user = await User.findById(userId)
+    if (!userToUnFollow || !user) {
+      return res.status(400).json({ success: false, message: "Users not found" })
+    }
+    
+    user.following = user.following.filter(item => item.userId != userIdToUnFollow)
+    userToUnFollow.followers = userToUnFollow.followers.filter(item => item.userId != userId)
+
+    user = await user.save()
+    userToUnFollow = await userToUnFollow.save()
+
+    res.status(201).json({ success: true, user: user, userToUnFollow: userToUnFollow })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ success: false, message: "Couldn't retrieve data. Sorry!" })
+  }
+}
+
 const getUserByUserName = async (req, res) => {
   const { userName } = req.params
   try {
@@ -186,4 +210,4 @@ const getUserByUserName = async (req, res) => {
   }
 }
 
-module.exports = { loginUserWithCredentials, signupUserWithEmailAndPassword, userAuthentication, authVerify, userDetailsUpdate, getAllUsers, followUser, getUserByUserName }
+module.exports = { loginUserWithCredentials, signupUserWithEmailAndPassword, userAuthentication, authVerify, userDetailsUpdate, getAllUsers, followUser,unfollowUser, getUserByUserName }
